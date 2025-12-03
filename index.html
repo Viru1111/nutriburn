@@ -1291,7 +1291,49 @@
                     </div>
 
                     <div class="form-submit">
-                        <button type="submit" class="btn btn-secondary">Pay Now - ₹249</button>
+                        <button type="submit" id="payBtn" class="btn btn-secondary">Pay Now - ₹249</button>
+                        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+document.getElementById("payBtn").onclick = async function () {
+
+    // 1. Create order by calling backend
+    const order = await fetch("http://localhost:5000/create-order", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }).then(res => res.json());
+
+    // 2. Razorpay options
+    var options = {
+        "key": "rzp_test_RnEBCcWxd2r8jr",  
+        "amount": order.amount,
+        "currency": order.currency,
+        "name": "Nutruburn",
+        "description": "Purchase",
+        "order_id": order.id,
+
+        "handler": function (response) {
+            // On successful payment
+            window.location.href = "/order-confirm.html";
+        },
+
+        "prefill": {
+            "name": "",
+            "email": "",
+            "contact": ""
+        },
+
+        "theme": {
+            "color": "#00b894"
+        }
+    };
+
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+};
+</script>
                     </div>
                 </form>
             </div>
